@@ -103,3 +103,55 @@ void Grafo::dfs_interno(int v, vector<bool>& visitado, vector<int>& pai, vector<
 
     post[v] = tempo++;
 }
+
+void Grafo::dfs_interno(int v, vector<bool> &visitado, vector<int> &comp) {
+    visitado[v] = true;
+    comp.push_back(v);
+
+    if (rep == LISTA_ADJ) {
+        for (const auto &item : lista_adj[v]) {
+            int u = item.first;
+            if (!visitado[u]) {
+                dfs_interno(u, visitado, comp);
+            }
+        }
+    } else { // MATRIZ_ADJ
+        for (int u = 0; u < V; u++) {
+            if (matriz_adj[v][u] == 1 && !visitado[u]) {
+                dfs_interno(u, visitado, comp);
+            }
+        }
+    }
+}
+
+void Grafo::componentesConexos(const string &nomeSaida) {
+    vector<bool> visitado(V, false);
+    vector<vector<int>> componentes;
+
+    for (int v = 0; v < V; v++) {
+        if (visitado[v]) continue;
+
+        vector<int> comp;
+        dfs_interno(v, visitado, comp);
+        componentes.push_back(comp);
+    }
+
+    ofstream out(nomeSaida);
+    if (!out.is_open()) {
+        cerr << "Erro na saída!" << endl;
+        return;
+    }
+
+    out << "Quantidade de componentes conexos: " << componentes.size() << endl;
+
+    for (int i = 0; i < (int)componentes.size(); i++) {
+        out << "Componente " << (i + 1) << " (tamanho = " << componentes[i].size() << "):" << endl;
+
+        for (int v : componentes[i]) {
+            out << v << " "; 
+        }
+        out << endl;
+    }
+
+    out.close();
+}
