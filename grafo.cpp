@@ -4,6 +4,90 @@
 #include <queue>
 #include <iomanip>
 
+Grafo::Grafo(int V, Representacao rep) : V(V), A(0), rep(rep) {
+    if (rep == LISTA_ADJ) {
+        lista_adj.resize(V);
+    } else {
+        matriz_adj.resize(V, vector<int>(V, 0)); // 0 == sem aresta
+    }
+}
+
+void Grafo::lerDeArquivo(const string &nome) {
+    ifstream in(nome);
+    if (!in.is_open()) {
+        cerr << "Erro na abertura do arquivo!" << endl;
+        return;
+    }
+
+    in >> V;
+    A = 0;
+
+    if (rep == LISTA_ADJ) {
+        lista_adj.resize(V);
+    } else {
+        matriz_adj.resize(V, vector<int>(V, 0)); 
+    }
+
+    int u, v;
+    while (in >> u >> v) {
+        if (u < 0 || u >= V ||
+            v < 0 || v >= V) continue;
+
+        A++;
+        if (rep == LISTA_ADJ) {
+            lista_adj[u].push_back({v, 1}); // peso = 1
+            lista_adj[v].push_back({u, 1}); // undirected
+        } else {
+            matriz_adj[u][v] = 1;
+            matriz_adj[v][u] = 1;
+        }
+    }
+
+    in.close();
+}
+
+void Grafo::salvarDadosGrafo(const string &nomeSaida) {
+    ofstream out(nomeSaida);
+    if (!out.is_open()) {
+        cerr << "Erro na saída!" << endl;
+        return;
+    }
+
+    // grau médio
+    double grauMedio = (double) (2 * A) / V;
+
+    // grau de cada um
+    vector<int> grau(V, 0);
+    for (int u = 0; u < V; u++) {
+        if (rep == LISTA_ADJ) {
+            grau[u] = lista_adj[u].size();
+        } else {
+            for (int v = 0; v < V; v++) {
+                if (matriz_adj[u][v] == 1) grau[u]++;
+            }
+        }
+    }
+
+    // distribuição
+    vector<int> distribuicao(V + 1, 0);
+    for (int u = 0; u < V; u++) {
+        distribuicao[grau[u]]++;
+    }
+
+    out << "Quantidade de vertices: " << V << endl;
+    out << "Quantidade de arestas: " << A << endl;
+    out << "Grau medio: " << grauMedio << endl;
+    out << "Distribuicao de grau:" << endl;
+
+    for (int g = 0; g <= V; g++) {
+        if (distribuicao[g] > 0) {
+            out << g << " : " << distribuicao[g] << endl;
+        }
+    }
+
+    out.close();
+}
+
 void Grafo::bfs(int s, const string& nome_saida) {
     vector<int> pai(V, -1);
     vector<int> pre(V, -1);
