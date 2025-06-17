@@ -1,0 +1,6 @@
+# DFS a partir do vértice 0
+# Vertice Pai
+0 -1
+1 -1
+2 -1
+3 0

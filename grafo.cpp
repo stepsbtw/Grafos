@@ -13,7 +13,7 @@ Grafo::Grafo(int V, Representacao rep) : V(V), E(0), rep(rep) {
     }
 }
 
-void Grafo::ler_de_arquivo(const string& nome_arquivo) {
+void Grafo::ler_arquivo(const string& nome_arquivo) {
     ifstream in(nome_arquivo);
     if (!in) {
         cerr << "Erro ao abrir arquivo." << endl;
@@ -62,9 +62,9 @@ void Grafo::salvar_estatisticas(const string& nome_arquivo) {
     for (int g : graus) contagem[g]++;
 
     ofstream out(nome_arquivo);
-    out << "# |V| = " << V << "\n";
-    out << "# |E| = " << E << "\n";
-    out << fixed << setprecision(1) << "# Grau Médio = " << grau_medio << "\n";
+    out << "# m = " << V << "\n";
+    out << "# n = " << E << "\n";
+    out << fixed << setprecision(1) << "# d_medio = " << grau_medio << "\n";
 
     for (int i = 0; i <= V; i++) {
         if (contagem[i] > 0) {

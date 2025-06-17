@@ -1,0 +1,6 @@
+# BFS a partir do vértice 0
+# Vertice | Pai | Nível
+0 -1 0
+1 0 1
+2 1 2
+3 0 1
