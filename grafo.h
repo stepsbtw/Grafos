@@ -14,15 +14,15 @@ private:
     vector<vector<int>> lista_adj;
     vector<vector<int>> matriz_adj;
 
-    void bfsInterno(int s, vector<int>& pai, vector<int>& nivel);
-    void dfsInterno(int v, vector<bool>& visitado, vector<int>& pai, vector<int>& pre, vector<int>& post, int& tempo);
-    void dfsComponentes(int v, vector<bool>& visitado, vector<int>& componente);
+    void bfs_interno(int s, vector<int>& pai, vector<int>& nivel);
+    void dfs_interno(int v, vector<bool>& visitado, vector<int>& pai, vector<int>& pre, vector<int>& post, int& tempo);
+    void dfs_componentes(int v, vector<bool>& visitado, vector<int>& componente);
 
 public:
     Grafo(int V, Representacao rep);
-    void lerDeArquivo(const string& nomeArquivo);
-    void salvarEstatisticas(const string& nomeArquivo);
-    void bfs(int s, const string& nomeSaida);
-    void dfs(int s, const string& nomeSaida);
-    void componentesConexos(const string& nomeSaida);
+    void ler_de_arquivo(const string& nome_arquivo);
+    void salvar_estatisticas(const string& nome_arquivo);
+    void bfs(int s, const string& nome_saida);
+    void dfs(int s, const string& nome_saida);
+    void componentes_conexas(const string& nome_saida);
 };

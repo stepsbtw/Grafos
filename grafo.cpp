@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <iomanip>
 
-Grafo::Grafo(int V, Representacao rep) : V(V), A(0), rep(rep) {
+Grafo::Grafo(int V, Representacao rep) : V(V), E(0), rep(rep) {
     if (rep == LISTA_ADJ) {
         lista_adj.resize(V);
     } else {
@@ -13,8 +13,8 @@ Grafo::Grafo(int V, Representacao rep) : V(V), A(0), rep(rep) {
     }
 }
 
-void Grafo::lerDeArquivo(const string& nomeArquivo) {
-    ifstream in(nomeArquivo);
+void Grafo::ler_de_arquivo(const string& nome_arquivo) {
+    ifstream in(nome_arquivo);
     if (!in) {
         cerr << "Erro ao abrir arquivo." << endl;
         return;
@@ -25,7 +25,7 @@ void Grafo::lerDeArquivo(const string& nomeArquivo) {
     else matriz_adj.assign(V, vector<int>(V, 0));
 
     int u, v;
-    A = 0;
+    E = 0;
     while (in >> u >> v) {
         if (rep == LISTA_ADJ) {
             lista_adj[u].push_back(v);
@@ -34,12 +34,12 @@ void Grafo::lerDeArquivo(const string& nomeArquivo) {
             matriz_adj[u][v] = 1;
             matriz_adj[v][u] = 1;
         }
-        A++;
+        E++;
     }
-    A /= 2; // não-direcionado
+    E /= 2; // não-direcionado
 }
 
-void Grafo::salvarEstatisticas(const string& nomeArquivo) {
+void Grafo::salvar_estatisticas(const string& nome_arquivo) {
     vector<int> graus(V, 0);
 
     if (rep == LISTA_ADJ) {
@@ -61,10 +61,10 @@ void Grafo::salvarEstatisticas(const string& nomeArquivo) {
     vector<int> contagem(V + 1, 0);
     for (int g : graus) contagem[g]++;
 
-    ofstream out(nomeArquivo);
-    out << "# n = " << V << "\n";
-    out << "# m = " << A << "\n";
-    out << fixed << setprecision(1) << "# d_medio = " << grau_medio << "\n";
+    ofstream out(nome_arquivo);
+    out << "# |V| = " << V << "\n";
+    out << "# |E| = " << E << "\n";
+    out << fixed << setprecision(1) << "# Grau Médio = " << grau_medio << "\n";
 
     for (int i = 0; i <= V; i++) {
         if (contagem[i] > 0) {
@@ -73,7 +73,7 @@ void Grafo::salvarEstatisticas(const string& nomeArquivo) {
     }
 }
 
-void Grafo::bfsInterno(int s, vector<int>& pai, vector<int>& nivel) {
+void Grafo::bfs_interno(int s, vector<int>& pai, vector<int>& nivel) {
     vector<bool> visitado(V, false);
     queue<int> q;
     visitado[s] = true;
@@ -98,19 +98,19 @@ void Grafo::bfsInterno(int s, vector<int>& pai, vector<int>& nivel) {
     }
 }
 
-void Grafo::bfs(int s, const string& nomeSaida) {
+void Grafo::bfs(int s, const string& nome_saida) {
     vector<int> pai(V, -1), nivel(V, -1);
-    bfsInterno(s, pai, nivel);
+    bfs_interno(s, pai, nivel);
 
-    ofstream out(nomeSaida);
-    out << "# BFS a partir do vertice " << s << "\n";
-    out << "Vertice Pai Nivel\n";
+    ofstream out(nome_saida);
+    out << "# BFS a partir do vértice " << s << "\n";
+    out << "# Vertice | Pai | Nível\n";
     for (int i = 0; i < V; i++) {
         out << i << " " << pai[i] << " " << nivel[i] << "\n";
     }
 }
 
-void Grafo::dfsInterno(int v, vector<bool>& visitado, vector<int>& pai, vector<int>& pre, vector<int>& post, int& tempo) {
+void Grafo::dfs_interno(int v, vector<bool>& visitado, vector<int>& pai, vector<int>& pre, vector<int>& post, int& tempo) {
     visitado[v] = true;
     pre[v] = tempo++;
     const vector<int>& vizinhos = (rep == LISTA_ADJ) ? lista_adj[v] : vector<int>();
@@ -118,57 +118,53 @@ void Grafo::dfsInterno(int v, vector<bool>& visitado, vector<int>& pai, vector<i
         if ((rep == MATRIZ_ADJ && matriz_adj[v][u]) || (rep == LISTA_ADJ && find(vizinhos.begin(), vizinhos.end(), u) != vizinhos.end())) {
             if (!visitado[u]) {
                 pai[u] = v;
-                dfsInterno(u, visitado, pai, pre, post, tempo);
+                dfs_interno(u, visitado, pai, pre, post, tempo);
             }
         }
     }
     post[v] = tempo++;
 }
 
-void Grafo::dfs(int s, const string& nomeSaida) {
+void Grafo::dfs(int s, const string& nome_saida) {
     vector<int> pai(V, -1), pre(V, -1), post(V, -1);
     vector<bool> visitado(V, false);
     int tempo = 0;
-    dfsInterno(s, visitado, pai, pre, post, tempo);
+    dfs_interno(s, visitado, pai, pre, post, tempo);
 
-    ofstream out(nomeSaida);
-    out << "# DFS a partir do vertice " << s << "\n";
-    out << "Vertice Pai\n";
+    ofstream out(nome_saida);
+    out << "# DFS a partir do vértice " << s << "\n";
+    out << "# Vertice Pai\n";
     for (int i = 0; i < V; i++) {
         out << i << " " << pai[i] << "\n";
     }
 }
 
-void Grafo::dfsComponentes(int v, vector<bool>& visitado, vector<int>& componente) {
+void Grafo::dfs_componentes(int v, vector<bool>& visitado, vector<int>& componente) {
     visitado[v] = true;
     componente.push_back(v);
     const vector<int>& vizinhos = (rep == LISTA_ADJ) ? lista_adj[v] : vector<int>();
     for (int u = 0; u < V; u++) {
         if ((rep == MATRIZ_ADJ && matriz_adj[v][u]) || (rep == LISTA_ADJ && find(vizinhos.begin(), vizinhos.end(), u) != vizinhos.end())) {
             if (!visitado[u]) {
-                dfsComponentes(u, visitado, componente);
+                dfs_componentes(u, visitado, componente);
             }
         }
     }
 }
 
-void Grafo::componentesConexos(const string& nomeSaida) {
+void Grafo::componentes_conexas(const string& nome_saida) {
     vector<bool> visitado(V, false);
     vector<vector<int>> componentes;
 
     for (int i = 0; i < V; i++) {
         if (!visitado[i]) {
             vector<int> componente;
-            dfsComponentes(i, visitado, componente);
+            dfs_componentes(i, visitado, componente);
             componentes.push_back(componente);
         }
     }
 
-    sort(componentes.begin(), componentes.end(), [](const vector<int>& a, const vector<int>& b) {
-        return a.size() > b.size();
-    });
-
-    ofstream out(nomeSaida);
+    ofstream out(nome_saida);
     out << "# Numero de componentes: " << componentes.size() << "\n";
     for (size_t i = 0; i < componentes.size(); i++) {
         out << "Componente " << i + 1 << " (tam: " << componentes[i].size() << "): ";
