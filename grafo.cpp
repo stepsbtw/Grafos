@@ -164,6 +164,8 @@ void Grafo::componentes_conexas(const string& nome_saida) {
         }
     }
 
+    sort(componentes.begin(), componentes.end(), [](const vector<int>& a, const vector<int>& b) {return a.size() > b.size();});
+    
     ofstream out(nome_saida);
     out << "# Numero de componentes: " << componentes.size() << "\n";
     for (size_t i = 0; i < componentes.size(); i++) {
