@@ -8,7 +8,7 @@ enum Representacao { LISTA_ADJ, MATRIZ_ADJ };
 
 class Grafo {
 private:
-    int V, A;
+    int V, E;
     Representacao rep;
 
     vector<vector<int>> lista_adj;
@@ -20,7 +20,7 @@ private:
 
 public:
     Grafo(int V, Representacao rep);
-    void ler_de_arquivo(const string& nome_arquivo);
+    void ler_arquivo(const string& nome_arquivo);
     void salvar_estatisticas(const string& nome_arquivo);
     void bfs(int s, const string& nome_saida);
     void dfs(int s, const string& nome_saida);
