@@ -75,28 +75,39 @@ void Grafo::salvar_estatisticas(const string& nome_arquivo) {
 
 void Grafo::bfs_interno(int s, vector<int>& pai, vector<int>& nivel) {
     vector<bool> visitado(V, false);
-    queue<int> q;
+    queue<int> fila;
+
     visitado[s] = true;
     nivel[s] = 0;
     pai[s] = -1;
-    q.push(s);
+    fila.push(s);
 
-    while (!q.empty()) {
-        int u = q.front(); q.pop();
+    while (!fila.empty()) {
+        int u = fila.front();
+        fila.pop();
 
-        const vector<int>& vizinhos = (rep == LISTA_ADJ) ? lista_adj[u] : vector<int>();
-        for (int v = 0; v < V; v++) {
-            if ((rep == MATRIZ_ADJ && matriz_adj[u][v]) || (rep == LISTA_ADJ && find(vizinhos.begin(), vizinhos.end(), v) != vizinhos.end())) {
+        if (rep == LISTA_ADJ) {
+            for (int v : lista_adj[u]) {
                 if (!visitado[v]) {
                     visitado[v] = true;
                     pai[v] = u;
                     nivel[v] = nivel[u] + 1;
-                    q.push(v);
+                    fila.push(v);
+                }
+            }
+        } else { // MATRIZ_ADJ
+            for (int v = 0; v < V; v++) {
+                if (matriz_adj[u][v] && !visitado[v]) {
+                    visitado[v] = true;
+                    pai[v] = u;
+                    nivel[v] = nivel[u] + 1;
+                    fila.push(v);
                 }
             }
         }
     }
 }
+
 
 void Grafo::bfs(int s, const string& nome_saida) {
     vector<int> pai(V, -1), nivel(V, -1);
@@ -113,17 +124,26 @@ void Grafo::bfs(int s, const string& nome_saida) {
 void Grafo::dfs_interno(int v, vector<bool>& visitado, vector<int>& pai, vector<int>& pre, vector<int>& post, int& tempo) {
     visitado[v] = true;
     pre[v] = tempo++;
-    const vector<int>& vizinhos = (rep == LISTA_ADJ) ? lista_adj[v] : vector<int>();
-    for (int u = 0; u < V; u++) {
-        if ((rep == MATRIZ_ADJ && matriz_adj[v][u]) || (rep == LISTA_ADJ && find(vizinhos.begin(), vizinhos.end(), u) != vizinhos.end())) {
+
+    if (rep == LISTA_ADJ) {
+        for (int u : lista_adj[v]) {
             if (!visitado[u]) {
                 pai[u] = v;
                 dfs_interno(u, visitado, pai, pre, post, tempo);
             }
         }
+    } else { // MATRIZ_ADJ
+        for (int u = 0; u < V; u++) {
+            if (matriz_adj[v][u] && !visitado[u]) {
+                pai[u] = v;
+                dfs_interno(u, visitado, pai, pre, post, tempo);
+            }
+        }
     }
+
     post[v] = tempo++;
 }
+
 
 void Grafo::dfs(int s, const string& nome_saida) {
     vector<int> pai(V, -1), pre(V, -1), post(V, -1);
@@ -142,15 +162,22 @@ void Grafo::dfs(int s, const string& nome_saida) {
 void Grafo::dfs_componentes(int v, vector<bool>& visitado, vector<int>& componente) {
     visitado[v] = true;
     componente.push_back(v);
-    const vector<int>& vizinhos = (rep == LISTA_ADJ) ? lista_adj[v] : vector<int>();
-    for (int u = 0; u < V; u++) {
-        if ((rep == MATRIZ_ADJ && matriz_adj[v][u]) || (rep == LISTA_ADJ && find(vizinhos.begin(), vizinhos.end(), u) != vizinhos.end())) {
+
+    if (rep == LISTA_ADJ) {
+        for (int u : lista_adj[v]) {
             if (!visitado[u]) {
+                dfs_componentes(u, visitado, componente);
+            }
+        }
+    } else { // MATRIZ_ADJ
+        for (int u = 0; u < V; u++) {
+            if (matriz_adj[v][u] && !visitado[u]) {
                 dfs_componentes(u, visitado, componente);
             }
         }
     }
 }
+
 
 void Grafo::componentes_conexas(const string& nome_saida) {
     vector<bool> visitado(V, false);

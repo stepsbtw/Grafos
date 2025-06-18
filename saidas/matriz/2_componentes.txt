@@ -1,4 +1,0 @@
-# Numero de componentes: 3
-Componente 1 (tam: 2): 0 1 
-Componente 2 (tam: 1): 2 
-Componente 3 (tam: 1): 3 
