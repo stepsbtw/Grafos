@@ -11,8 +11,8 @@ private:
     int V, E;
     Representacao rep;
 
-    vector<vector<int>> lista_adj; // grafos esparsos
-    vector<vector<int>> matriz_adj; // grafos densos
+    vector<vector<pair<int, double>>> lista_adj; // grafos esparsos
+    vector<vector<double>> matriz_adj; // grafos densos
 
     void bfs_interno(int s, vector<int>& pai, vector<int>& nivel);
     void dfs_interno(int v, vector<bool>& visitado, vector<int>& pai, vector<int>& pre, vector<int>& post, int& tempo);
