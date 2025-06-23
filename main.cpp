@@ -17,4 +17,6 @@ int main(){
     g2.bfs(no_inicial, "saida/g2_bfs.txt");
     g2.dfs(no_inicial, "saida/g2_dfs.txt");
     g2.componentes_conexas("saida/g2_componentes.txt");
+
+    
 }
