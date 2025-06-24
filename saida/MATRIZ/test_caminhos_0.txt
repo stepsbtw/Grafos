@@ -1,0 +1,7 @@
+# Caminhos mínimos a partir de 0
+0: 0 (distância = 0)
+1: 0 2 1 (distância = 3)
+2: 0 2 (distância = 2)
+3: 0 2 1 3 (distância = 8)
+4: 0 2 1 3 4 (distância = 10)
+5: 0 2 1 3 4 5 (distância = 13)

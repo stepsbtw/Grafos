@@ -1,0 +1,2 @@
+# Numero de componentes: 1
+Componente 1 (tam: 4): 0 3 2 1 
