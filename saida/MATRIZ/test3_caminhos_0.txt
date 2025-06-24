@@ -1,0 +1,16 @@
+# Caminhos mínimos a partir de 0
+0: 0 (distância = 0)
+1: 0 1 (distância = 1)
+2: 0 2 (distância = 1)
+3: 0 1 3 (distância = 2)
+4: 0 1 3 4 (distância = 3)
+5: 0 1 3 5 (distância = 3)
+6: inatingível
+7: inatingível
+8: inatingível
+9: inatingível
+10: inatingível
+11: inatingível
+12: inatingível
+13: inatingível
+14: inatingível

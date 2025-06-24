@@ -1,0 +1,6 @@
+# Numero de componentes: 5
+Componente 1 (tam: 6): 0 2 1 3 5 4 
+Componente 2 (tam: 3): 6 8 7 
+Componente 3 (tam: 3): 11 13 12 
+Componente 4 (tam: 2): 9 10 
+Componente 5 (tam: 1): 14 
